@@ -86,12 +86,12 @@ export interface CommentResource {
 ////////////////////////////////////////// Video Results //////////////////////////////////////////
 
 export interface YouTubeVideoResource {
-  kind: "youtube#video";            // Literal type for kind
-  etag: string; 
-  id: string;                       // Video ID
+  kind: "youtube#video"; // Literal type for kind
+  etag: string;
+  id: string; // Video ID
 
   snippet: {
-    publishedAt: string;            // DateTime is usually a string in ISO format
+    publishedAt: string; // DateTime is usually a string in ISO format
     channelId: string;
     title: string;
     description: string;
@@ -99,24 +99,24 @@ export interface YouTubeVideoResource {
       string,
       {
         url: string;
-        width: number; 
-        height: number; 
+        width: number;
+        height: number;
       }
     >;
     channelTitle: string;
     categoryId: string;
-    liveBroadcastContent: string;     // Usually "none", "live", or "upcoming"
-    defaultLanguage?: string;         // Optional as it might not always exist
-    defaultAudioLanguage?: string;    // Optional as it might not always exist
+    liveBroadcastContent: string; // Usually "none", "live", or "upcoming"
+    defaultLanguage?: string; // Optional as it might not always exist
+    defaultAudioLanguage?: string; // Optional as it might not always exist
   };
 
   contentDetails: {
-    duration: string;                 // ISO 8601 duration string
-    dimension: string;                // For example, "2d" or "3d"
+    duration: string; // ISO 8601 duration string
+    dimension: string; // For example, "2d" or "3d"
   };
 
   statistics: {
-    viewCount: string;                 // These are often strings in YouTube API to prevent overflow issues
+    viewCount: string; // These are often strings in YouTube API to prevent overflow issues
     likeCount: string;
     commentCount: string;
   };

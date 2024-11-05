@@ -11,7 +11,7 @@ class APIClient<T> {
 
   getAll = (config: AxiosRequestConfig) => {
     return axios
-      .get<YoutubeFetchResponse<T>>(this.baseURL, config)
+      .get<T>(this.baseURL, config)
       .then((res) => res.data);
   };
 }

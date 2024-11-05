@@ -26,7 +26,7 @@ const Header = () => {
         <h2 className="text-2xl font-bold"> Youtube Comments...</h2>
       </div>
 
-      <NavigationMenu>
+      <NavigationMenu className="z-50">
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
