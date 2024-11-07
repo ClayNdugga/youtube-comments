@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from '../ui/input';
 
-const SearchBar = ({ onSearch, className }) => {
+const SearchBar = ({ onSearch, className, placeholder }) => {
   const [searchTerms, setSearchTerms] = useState("");
 
   const handleSearch = () => {
@@ -27,7 +27,7 @@ const SearchBar = ({ onSearch, className }) => {
         value={searchTerms}
         onChange={(e) => setSearchTerms(e.target.value)}
         onKeyDown={handleKeyDown} // Add the key down event handler
-        placeholder="Search"
+        placeholder= {placeholder} 
         className="pl-10 pr-4 py-2 border border-gray-300 rounded-md outline-none w-full" // Ensure full width
       />
       <button onClick={handleSearch}>

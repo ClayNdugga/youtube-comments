@@ -6,9 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 const lambdaURL = "https://wicoe2utvi.execute-api.ca-central-1.amazonaws.com/default/youtube-test-axios";
 const apiClient = new APIClient<YoutubeFetchResponse<CommentThreadResource>>(lambdaURL);
 
+
 const useComments = (videoId: string, searchTerms: string, order: string) =>
   useQuery<YoutubeFetchResponse<CommentThreadResource>, Error>({
-    queryKey:  ["comments", videoId, searchTerms, order],
+    queryKey:  ["comments", videoId, order != "relevance" ? searchTerms: "" , order],
     queryFn: () => {
       const params: Record<string, any> = {
         videoId: videoId,
@@ -17,14 +18,13 @@ const useComments = (videoId: string, searchTerms: string, order: string) =>
         order: order
       };
 
-      // Only include searchTerms if order is not "relevance"
       if (order !== "relevance") {
         params.searchTerms = searchTerms;
       }
 
       return apiClient.getAll({ params });
     },
-    enabled: !!videoId && (order === "relevance" || (order === "time" && !!searchTerms))
+    enabled: !!videoId && (order === "relevance" || (order === "time" && !!searchTerms)) && (order != 'Order By')
   });
 
 export default useComments;

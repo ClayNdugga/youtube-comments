@@ -3,7 +3,7 @@ import { traceGlobals } from "next/dist/trace/shared";
 import React, { useState } from "react";
 
 interface Props {
-  dataSong: SpotifyResponse<Track>;
+  dataSong: Track[];
 }
 const SongGrid = ({ dataSong }: Props) => {
     const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
@@ -27,7 +27,7 @@ const SongGrid = ({ dataSong }: Props) => {
     <>
       <div className="flex flex-1 flex-col gap-4 p-4 max-w-6xl mx-auto">
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {dataSong.items.map((track, index) => (
+          {dataSong.map((track, index) => (
             <a
               key={index}
               href={track.external_urls.spotify}

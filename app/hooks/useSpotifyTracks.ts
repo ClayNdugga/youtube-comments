@@ -8,15 +8,36 @@ const apiClient = new APIClient<SpotifyResponse<Track>>(lambdaURL);
 
 
 
-const useSpotifyTracks = (q: string, limit: string) =>
-  useQuery<SpotifyResponse<Track>, Error>({
-    queryKey: ["tracks", q, limit],
-    queryFn: () =>
-      apiClient.getAll({
-        params: { q: q, limit: limit },
-      }),
-    enabled: !!q && !!limit,
+const useSpotifyTracks = (queries: string[]) => {
+  return useQuery<Track[], Error>({
+    queryKey: ["multipleTracks", queries],
+    queryFn: async () => {
+      const results = await Promise.all(
+        queries.map((q) =>
+          apiClient.getAll({
+            params: { q: q , limit: 1},
+          })
+        )
+      );
+      return results.flatMap(result => result.items)
+    },
+    enabled: queries.length > 0
   });
+};
+
+
+
+
+
+// const useSpotifyTracks = (q: string, limit: string) =>
+//   useQuery<SpotifyResponse<Track>, Error>({
+//     queryKey: ["tracks", q, limit],
+//     queryFn: () =>
+//       apiClient.getAll({
+//         params: { q: q, limit: limit },
+//       }),
+//     enabled: !!q && !!limit,
+//   });
 
 
 
