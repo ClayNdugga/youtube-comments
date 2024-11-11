@@ -13,7 +13,7 @@ const useSpotifyTracks = (queries: string[]) => {
     queryKey: ["multipleTracks", queries],
     queryFn: async () => {
       const results = await Promise.all(
-        queries.map((q) =>
+        queries.slice(0,5).map((q) =>
           apiClient.getAll({
             params: { q: q , limit: 1},
           })

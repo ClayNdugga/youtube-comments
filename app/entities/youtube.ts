@@ -121,3 +121,49 @@ export interface YouTubeVideoResource {
     commentCount: string;
   };
 }
+////////////////////////////////////////// Channel Results //////////////////////////////////////////
+
+
+export interface YouTubeChannelResource {
+  kind: "youtube#channel";
+  etag: string;
+  id: string;
+  snippet: {
+    title: string;
+    description: string;
+    customUrl: string;
+    publishedAt: string; // You can convert this to Date in processing if needed
+    thumbnails: Record<
+      string,
+      {
+        url: string;
+        width: number;
+        height: number;
+      }
+    >;
+    defaultLanguage?: string;
+    localized: {
+      title: string;
+      description: string;
+    };
+    country?: string;
+  };
+  contentDetails?: {
+    relatedPlaylists: {
+      likes?: string;
+      favorites?: string;
+      uploads: string;
+    };
+  };
+  statistics?: {
+    viewCount: number;
+    subscriberCount: number;
+    hiddenSubscriberCount: boolean;
+    videoCount: number;
+  };
+  brandingSettings: {
+    image?: {
+      bannerExternalUrl: string
+    }
+  }
+}

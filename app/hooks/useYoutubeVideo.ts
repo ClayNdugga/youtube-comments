@@ -17,8 +17,6 @@ const useYoutubeVideo = (videoId: string) =>
       apiClient.getAll({
         params: {
           id: videoId,
-          //   id: "iL7sNPGKksc",
-          //   https://www.youtube.com/watch?v=iL7sNPGKksc
         },
       }),
     enabled: !!videoId, //only run if videoId is not empty

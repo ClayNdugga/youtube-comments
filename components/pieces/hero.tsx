@@ -7,37 +7,53 @@ import VideoSkeleton from "./videoSkeleton";
 
 import useYoutubeVideo from "@/app/hooks/useYoutubeVideo";
 
-import { parseYouTubeVideoId } from "@/app/services/helperFunctions";
+import {  parseSearch } from "@/app/services/helperFunctions";
 import Background from "./background";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ExternalLink } from "lucide-react";
+import useYoutubeChannel from "@/app/hooks/useYoutubeChannel";
+import Channel from "./channel";
+
+
+
 
 const Hero = () => {
   const [videoId, setVideoId] = useState("");
+  const [channelId, setChannelId] = useState("");
   const [searchTerms, setSearchTerms] = useState("");
-  const videoRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [currentContent, setCurrentContent] = useState("")
 
   const { data: dataVideo, isLoading: isLoadingVideo, error: errorVideo } = useYoutubeVideo(videoId);
+  const { data: dataChannel, isLoading: isLoadingChannel, error: errorChannel } = useYoutubeChannel(channelId);
 
-  const handleVideoSearch = (urlORsearch) => {
-    const parsedId = parseYouTubeVideoId(urlORsearch);
-    setVideoId(parsedId);
+  const handleVideoSearch = (urlOrSearch: string) => {
+    const [parsedId, isVideo] = parseSearch(urlOrSearch);
+  
+    if (isVideo) {
+      setVideoId(parsedId);
+      setCurrentContent("video")
+    } else {
+      setCurrentContent("channel")
+      setChannelId(parsedId);
+    }
+  
     setSearchTerms("");
   };
 
   // Scroll to the video when dataVideo changes
   useEffect(() => {
-    if (isLoadingVideo || dataVideo) {
-      if (videoRef.current) {
+    if (isLoadingVideo || dataVideo ||isLoadingChannel || dataChannel) {
+      if (contentRef.current) {
         // Scroll to the component's position plus some extra space
         window.scrollTo({
-          top: videoRef.current.offsetTop, // Adjust this value for extra space
+          top: contentRef.current.offsetTop, // Adjust this value for extra space
           behavior: "smooth",
         });
       }
     }
-  }, [isLoadingVideo]); // Only runs when dataVideo changes
+  }, [isLoadingVideo, isLoadingChannel]); // Only runs when dataVideo changes
 
   return (
     <>
@@ -54,6 +70,7 @@ const Hero = () => {
               <ul>
                 <li>https://www.youtube.com/watch?v=yfWVQ25UmEQ</li>
                 <li>https://www.youtube.com/watch?v=34jW2MBME0Q&t=740s</li>
+                <li>https://www.youtube.com/watch?v=r_nBlutWzp4&ab_channel=TheTrenTwins</li>
               </ul>
             </div>
 
@@ -63,22 +80,35 @@ const Hero = () => {
           {errorVideo && <p>Error: {errorVideo.message}</p>}
       
 
-          <div className={`flex-grow ${isLoadingVideo || dataVideo ? "h-screen" : "h-auto"}`} ref={videoRef}>
+          <div className={`flex-grow ${(isLoadingVideo || dataVideo) && currentContent === "video" ? "h-screen" : "h-auto"}`} ref={contentRef}>
             {isLoadingVideo ? (
               <VideoSkeleton />
             ) : (
-              dataVideo && 
+              dataVideo && currentContent === "video" &&
               <>
                 <Video video={dataVideo} />
-                <CommentSection videoId={videoId} />
+                <CommentSection channelId = {dataVideo.items[0].snippet.channelId } videoId={videoId} />
+              </>
+
+            )}
+          </div>
+
+          <div className={`flex-grow ${(isLoadingChannel || dataChannel ) && currentContent === "channel" ? "h-screen" : "h-auto"}`} ref={contentRef}>
+            {isLoadingChannel ? (
+              <VideoSkeleton />
+            ) : (
+              dataChannel && currentContent === "channel" &&
+              <>
+                <Channel channel={dataChannel} />
+                {/* <CommentSection videoId={videoId} /> */}
               </>
 
             )}
           </div>
 
           {/* {isLoadingVideo && (
-            <div className="h-screen" ref={videoRef}>
-              <VideoSkeleton ref={videoRef} />
+            <div className="h-screen" ref={contentRef}>
+              <VideoSkeleton ref={contentRef} />
             </div>
           )}
           {dataVideo && (
@@ -121,7 +151,7 @@ export default Hero;
 // import useYoutubeComments from "../../app/hooks/useYoutubeComments";
 // import useYoutubeVideo from "@/app/hooks/useYoutubeVideo";
 
-// import { parseYouTubeVideoId } from "@/app/services/helperFunctions";
+// import {  } rom "@/app/services/helperFunctions";
 
 // import tempComments from "../../app/entities/tempComments";
 // import tempVideo from "../../app/entities/tempVideo";
@@ -135,7 +165,7 @@ export default Hero;
 //     const commentSkeletons = [1,2,3,4,5,6,7,8,9]
 
 //     const handleVideoSearch = (urlORsearch) => {
-//       const parsedId = parseYouTubeVideoId(urlORsearch);
+//       const parsedId = (ORsearch);
 //       setVideoId(parsedId); // Update videoId state with the parsed video ID
 //     };
 

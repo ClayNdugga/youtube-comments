@@ -46,7 +46,7 @@ const CommentCard = ({ comment }: Props) => {
             {/* Right */}
             <div className="righthalf text-left">
               <p className="font-bold">{snip.authorDisplayName}</p>
-              <q className="leading-7 text-foreground/70">{snip.textDisplay}</q>
+              <p className="leading-7 text-foreground/70 whitespace-pre-wrap">{snip.textDisplay}</p>
               <div className="flex flex-row gap-4">
                 <p className="text-muted-foreground flex flex-row">
                   <ThumbsUp className="ml-2 size-4" /> {snip.likeCount}

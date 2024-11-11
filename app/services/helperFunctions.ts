@@ -25,8 +25,8 @@ export function formatTimestamp(input: string): string {
   return ""; // Fallback for empty input or unrecognized format
 }
 
-export function formatLargeNumber(input: string): string {
-  const number = parseFloat(input); // Convert the input string to a number
+export function formatLargeNumber(input: string | number): string {
+  const number = typeof(input) === "string" ? parseFloat(input): input; // Convert the input string to a number
 
   if (isNaN(number)) {
     return input; // Return the original string if it's not a valid number
@@ -41,12 +41,23 @@ export function formatLargeNumber(input: string): string {
   }
 }
 
-export function parseYouTubeVideoId(url: string): string | null {
-  const videoIdRegex =
-    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
-  const match = url.match(videoIdRegex);
-  return match ? match[1] : null;
+export function parseSearch(url: string): [string | null, boolean] {
+  const videoIdRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
+  const channelHandleRegex = /@([a-zA-Z0-9_-]+)/;
+
+  const videoMatch = url.match(videoIdRegex);
+  if (videoMatch) {
+    return [videoMatch[1], true]; 
+  }
+
+  const channelMatch = url.match(channelHandleRegex);
+  if (channelMatch) {
+    return [channelMatch[1], false]; 
+  }
+
+  return [null, false];
 }
+
 
 export function timeSinceUpload(dateString: string) {
   const uploadDate = new Date(dateString);

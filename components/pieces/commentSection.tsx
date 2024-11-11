@@ -22,25 +22,40 @@ import SongGrid from "./songGrid";
 import { Skeleton } from "../ui/skeleton";
 import AlbumGridSkeleton from "./albumGridSkeleton";
 
+import InfiniteScroll from "react-infinite-scroll-component";
+import PropogateLoader from "react-spinners/PropagateLoader";
+import useUniqueSongs from "@/app/hooks/useUniqueSongs";
+
 interface Props {
   // fetchedComments: YoutubeFetchResponse<CommentThreadResource>;
   videoId: string;
+  channelId: string
 
   // setOrder: (order: string) => void;
   // onSearch: (searchTerms: string) => void;
   // onSearch={handleCommentSearch}
 }
 
-const CommentSection = ({ videoId }: Props) => {
+const CommentSection = ({ videoId, channelId }: Props) => {
   const [searchTerms, setSearchTerms] = useState("");
   const [order, setOrder] = useState("");
   const [songQueries, setSongQueries] = useState<string[]>([]);
+  const [search, setSearch] = useState<boolean>(false);
   const commentRef = useRef<HTMLDivElement | null>(null);
 
-  const { data: dataComment, isLoading: isLoadingComment, error: errorComment, isFetching } = useYoutubeComments(videoId, searchTerms, order);
+  const {
+    data: dataComment,
+    isLoading: isLoadingComment,
+    error: errorComment,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useYoutubeComments(videoId, searchTerms, order);
   const commentSkeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   const { data: dataSong, isLoading: isLoadingSong, error: errorSong } = useSpotifyTracks(songQueries);
+  const { data: SongQ, isLoading: isLoadingUnique, error: errorUnique} = useUniqueSongs(channelId, videoId, search)
+
 
   useEffect(() => {
     if (isLoadingComment) {
@@ -55,11 +70,7 @@ const CommentSection = ({ videoId }: Props) => {
   }, [isLoadingComment]);
 
   function handleOrdering(newOrder) {
-    // if (newOrder === "relevance") {
-    //   setSearchTerms("")
-    // }
     setOrder("relevance");
-    // setSearchTerms(" ")
   }
 
   const handleCommentSearch = (searchTerms) => {
@@ -68,9 +79,17 @@ const CommentSection = ({ videoId }: Props) => {
     setSearchTerms(searchTerms);
   };
 
+
   const handleSongSearch = () => {
-    setSongQueries(["komm susser todd", "rei II"]);
+    setSearch(true)
   };
+
+  useEffect(() => {
+    console.log(SongQ)
+    if (SongQ && SongQ.songs) {
+      setSongQueries(SongQ.songs);  // Update the songs only when SongQ is available
+    }
+  }, [SongQ]);
 
   return (
     <>
@@ -92,11 +111,14 @@ const CommentSection = ({ videoId }: Props) => {
         <SearchBar className="w-3/4 mb-10" onSearch={handleCommentSearch} placeholder={"Search Comments"} />
         {/* <Button className="w-[150px] bg-green-500 flex items-center space-x-2"> */}
         <Button className="w-[150px] flex items-center space-x-2" onClick={handleSongSearch}>
-          <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png" alt="icon" className="w-4 h-4" />
+          <img
+            src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png"
+            alt="icon"
+            className="w-4 h-4"
+          />
           <span> </span>Song Search
         </Button>
       </div>
-
       {errorSong && <p>Error: {errorSong.message}</p>}
       {isLoadingSong && <AlbumGridSkeleton />}
       {/* <AlbumGridSkeleton /> */}
@@ -105,7 +127,6 @@ const CommentSection = ({ videoId }: Props) => {
           <SongGrid dataSong={dataSong} />
         </div>
       )}
-
       {/* {errorComment && <p>Error: {errorComment.message}</p>}
       {isLoadingComment && commentSkeletons.map((skeleton) => <CommentSkeleton key={skeleton} />)}
       {dataComment && (
@@ -115,45 +136,34 @@ const CommentSection = ({ videoId }: Props) => {
           ))}
         </div>
       )} */}
-
       {errorComment && <p>Error: {errorComment.message}</p>}
       <div className={`flex-grow ${isLoadingComment || dataComment ? "h-screen" : "h-auto"}`}>
         {isLoadingComment
           ? commentSkeletons.map((skeleton) => <CommentSkeleton key={skeleton} />)
           : dataComment && (
               <>
-                {dataComment?.items.map((commentResource) => (
-                  <CommentCard key={commentResource.id} comment={commentResource} />
-                ))}
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious href="#" />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#" isActive>
-                        2
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#">3</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationNext href="#" />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
+                <InfiniteScroll
+                  dataLength={dataComment.pages.flatMap((page) => page.items).length} // Total length of items loaded so far
+                  next={() => {
+                    if (!isFetchingNextPage) {
+                      fetchNextPage({ cancelRefetch: false });
+                    }
+                  }} // Function to fetch next page
+                  hasMore={!!hasNextPage} // Check if there's more data to load
+                  loader={<></>}
+                  scrollThreshold={1.0} // Fetch more when 90% scrolled
+                >
+                  {dataComment.pages.flatMap((page) =>
+                    page.items.map((commentResource) => (
+                      <CommentCard key={commentResource.id} comment={commentResource} />
+                    ))
+                  )}
+                </InfiniteScroll>
+                {isFetchingNextPage && <PropogateLoader className="py-12" size={10} />}
+                <div className="min-h-60" />
               </>
             )}
       </div>
-
-      \
     </>
   );
 };
