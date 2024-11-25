@@ -7,12 +7,17 @@ import { useQuery } from "@tanstack/react-query";
 const lambdaURL = "https://jqu23yr8jg.execute-api.ca-central-1.amazonaws.com/default/youtube-channel";
 const apiClient = new APIClient<YouTubeChannelResource>(lambdaURL);
 
-const useYoutubeVideo = (channelId: string) =>
+const useYoutubeChannel = (identifier: string, isForHandle: boolean) =>
   useQuery<YoutubeFetchResponse<YouTubeChannelResource>, Error>({
-    queryKey: ["channel", channelId],
-    queryFn: () => apiClient.getAll({ params: { forHandle: channelId } }),
-    enabled: !!channelId,
+    queryKey: ["channel", identifier],
+    queryFn: () => {
+      const params = isForHandle
+        ? { forHandle: identifier }             
+        : { id: identifier };        
+      return apiClient.getAll({ params });     
+    },
+    enabled: !!identifier,
     // staleTIme: ms("1h"),
   });
 
-export default useYoutubeVideo;
+export default useYoutubeChannel;

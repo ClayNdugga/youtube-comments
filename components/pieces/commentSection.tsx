@@ -24,12 +24,18 @@ import AlbumGridSkeleton from "./albumGridSkeleton";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 import PropogateLoader from "react-spinners/PropagateLoader";
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import useUniqueSongs from "@/app/hooks/useUniqueSongs";
+import { SongCarousel } from "./songCarousel";
+
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Arrow } from "@radix-ui/react-select";
+import { useTheme } from "next-themes";
 
 interface Props {
   // fetchedComments: YoutubeFetchResponse<CommentThreadResource>;
-  videoId: string;
-  channelId: string
+  videoId?: string;
+  channelId: string;
 
   // setOrder: (order: string) => void;
   // onSearch: (searchTerms: string) => void;
@@ -38,10 +44,19 @@ interface Props {
 
 const CommentSection = ({ videoId, channelId }: Props) => {
   const [searchTerms, setSearchTerms] = useState("");
-  const [order, setOrder] = useState("");
-  const [songQueries, setSongQueries] = useState<string[]>([]);
   const [search, setSearch] = useState<boolean>(false);
+  const [order, setOrder] = useState("");
+  
+  const [queuedJob, setQueuedJob] = useState<boolean>(false);
+  const [songQueries, setSongQueries] = useState<string[]>([]);
+
   const commentRef = useRef<HTMLDivElement | null>(null);
+
+  const [page, setPage] = useState(0);
+  const [songsPerPage, setSongsPerPage] = useState(4);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const { theme, setTheme } = useTheme();
 
   const {
     data: dataComment,
@@ -50,12 +65,15 @@ const CommentSection = ({ videoId, channelId }: Props) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useYoutubeComments(videoId, searchTerms, order);
+  } = useYoutubeComments(searchTerms, order, videoId, channelId);
   const commentSkeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  const { data: dataSong, isLoading: isLoadingSong, error: errorSong } = useSpotifyTracks(songQueries);
-  const { data: SongQ, isLoading: isLoadingUnique, error: errorUnique} = useUniqueSongs(channelId, videoId, search)
-
+  const {
+    data: dataSong,
+    isLoading: isLoadingSong,
+    error: errorSong,
+  } = useSpotifyTracks(songQueries, page, songsPerPage);
+  const { data: SongQ, isLoading: isLoadingUnique, error: errorUnique } = useUniqueSongs(channelId, search, videoId);
 
   useEffect(() => {
     if (isLoadingComment) {
@@ -69,75 +87,99 @@ const CommentSection = ({ videoId, channelId }: Props) => {
     }
   }, [isLoadingComment]);
 
-  function handleOrdering(newOrder) {
+  function handleOrdering() {
     setOrder("relevance");
   }
 
-  const handleCommentSearch = (searchTerms) => {
+  const handleCommentSearch = (searchTerms: string) => {
     setOrder("time");
     console.log(searchTerms);
     setSearchTerms(searchTerms);
   };
 
-
   const handleSongSearch = () => {
-    setSearch(true)
+    setSearch(true);
   };
 
   useEffect(() => {
-    console.log(SongQ)
+    console.log(SongQ);
+    setTotalPages(SongQ?.songs ? Math.ceil(SongQ.songs.length / songsPerPage) : 0);
+    console.log(`totalPages: ${totalPages}`)
     if (SongQ && SongQ.songs) {
-      setSongQueries(SongQ.songs);  // Update the songs only when SongQ is available
+      setSongQueries(SongQ.songs); 
+    }
+    if (SongQ && SongQ.status === "queued") {
+      setQueuedJob(true); 
     }
   }, [SongQ]);
 
+  const handleNext = () => {
+    if (page + 1 <= totalPages) {
+      setPage(page + 1);
+      console.log(`page: ${page}`)
+    }
+  };
+  const handlePrev = () => {
+    if (page - 1 >= 0) {
+      setPage(page - 1);
+      console.log(`page: ${page}`)
+    }
+  };
+
   return (
     <>
-      <div className="flex flex-row justify-start space-x-4 pt-12" ref={commentRef}>
-        {/* <Select value={order} onValueChange={handleOrdering}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Order By" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Time">Time</SelectItem>
-            <SelectItem value="Relevance">Relevance</SelectItem>
-          </SelectContent>
-        </Select> */}
 
-        <Button variant="outline" className="w-[150px]" onClick={handleOrdering}>
+      <div className="flex flex-row justify-center space-x-4 pt-12" ref={commentRef}>
+        {!!videoId && <Button variant="outline" className="w-[150px]" onClick={handleOrdering}>
           Top Comments
-        </Button>
+        </Button>}
 
         <SearchBar className="w-3/4 mb-10" onSearch={handleCommentSearch} placeholder={"Search Comments"} />
         {/* <Button className="w-[150px] bg-green-500 flex items-center space-x-2"> */}
-        <Button className="w-[150px] flex items-center space-x-2" onClick={handleSongSearch}>
+        <Button className="w-[150px] flex items-center space-x-2 bg-foreground" onClick={handleSongSearch}>
           <img
-            src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png"
+            src={ theme === "dark" ? "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Black.png" : "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_White.png"}
             alt="icon"
             className="w-4 h-4"
           />
           <span> </span>Song Search
         </Button>
       </div>
+
       {errorSong && <p>Error: {errorSong.message}</p>}
-      {isLoadingSong && <AlbumGridSkeleton />}
-      {/* <AlbumGridSkeleton /> */}
-      {dataSong && (
-        <div className="flex justify-center items-center">
-          <SongGrid dataSong={dataSong} />
-        </div>
-      )}
-      {/* {errorComment && <p>Error: {errorComment.message}</p>}
-      {isLoadingComment && commentSkeletons.map((skeleton) => <CommentSkeleton key={skeleton} />)}
-      {dataComment && (
-        <div >
-          {dataComment?.items.map((commentResource) => (
-            <CommentCard key={commentResource.id} comment={commentResource} />
-          ))}
-        </div>
-      )} */}
+      {queuedJob && !(isLoadingSong || dataSong) && <div className="flex justify-center items-center">
+          <ClimbingBoxLoader className="py-12" size={10} />
+          <p className="text-base font-medium">Job in queue...</p>
+        </div>}
+
+      <div className="flex flex-row items-center justify-center">
+        {(dataSong || isLoadingSong) && (
+          <div className="min-w-20">
+            {page != 0 && <Button variant="outline" onClick={handlePrev} size="icon">
+              <ChevronLeft />
+            </Button>}
+          </div>
+        )}
+        
+        {isLoadingSong && <AlbumGridSkeleton />}
+        {/* <AlbumGridSkeleton /> */}
+        {dataSong && (
+          <div className="flex justify-center items-center">
+            <SongGrid dataSong={dataSong} />
+          </div>
+        )}
+ 
+        {(dataSong || isLoadingSong) && (
+          <div className="min-w-20">
+            {page != (totalPages-1) && <Button variant="outline" onClick={handleNext} size="icon">
+              <ChevronRight />
+            </Button>}
+          </div>
+        )}
+      </div>
+
       {errorComment && <p>Error: {errorComment.message}</p>}
-      <div className={`flex-grow ${isLoadingComment || dataComment ? "h-screen" : "h-auto"}`}>
+      <div className={`flex-grow ${isLoadingComment || dataComment ? "h-screen" : "h-auto"} `}>
         {isLoadingComment
           ? commentSkeletons.map((skeleton) => <CommentSkeleton key={skeleton} />)
           : dataComment && (

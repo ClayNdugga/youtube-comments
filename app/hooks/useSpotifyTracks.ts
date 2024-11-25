@@ -8,22 +8,26 @@ const apiClient = new APIClient<SpotifyResponse<Track>>(lambdaURL);
 
 
 
-const useSpotifyTracks = (queries: string[]) => {
+const useSpotifyTracks = (queries: string[], page: number, tracks_per_page = 4) => {
   return useQuery<Track[], Error>({
-    queryKey: ["multipleTracks", queries],
+    queryKey: ["multipleTracks", queries, page],
     queryFn: async () => {
+      const start = page * tracks_per_page;
+      const end = (page + 1) * tracks_per_page;
       const results = await Promise.all(
-        queries.slice(0,5).map((q) =>
-          apiClient.getAll({
-            params: { q: q , limit: 1},
+        queries.slice(start, end).map((q) =>
+          apiClient.getAll<SpotifyResponse<Track>>({
+            params: { q: q, limit: 1 },
           })
         )
       );
-      return results.flatMap(result => result.items)
+      return results.flatMap((result) => result.items);
     },
-    enabled: queries.length > 0
+    enabled: queries.length > 0,
+    refetchOnWindowFocus: false,
   });
 };
+
 
 
 

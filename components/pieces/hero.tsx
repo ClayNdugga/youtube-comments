@@ -26,7 +26,7 @@ const Hero = () => {
   const [currentContent, setCurrentContent] = useState("")
 
   const { data: dataVideo, isLoading: isLoadingVideo, error: errorVideo } = useYoutubeVideo(videoId);
-  const { data: dataChannel, isLoading: isLoadingChannel, error: errorChannel } = useYoutubeChannel(channelId);
+  const { data: dataChannel, isLoading: isLoadingChannel, error: errorChannel } = useYoutubeChannel(channelId, true);
 
   const handleVideoSearch = (urlOrSearch: string) => {
     const [parsedId, isVideo] = parseSearch(urlOrSearch);
@@ -58,19 +58,28 @@ const Hero = () => {
   return (
     <>
       <div className="flex flex-col">
-        <Background />
+
+
+        {/* <Background /> */}
+
+
         <main className="flex-grow flex flex-col justify-start items-center text-center w-full pt-[5vh]">
           <div className="z-10 flex flex-col items-center gap-6 text-center">
             <img src="https://www.shadcnblocks.com/images/block/block-1.svg" alt="logo" className="h-16" />
             <Badge variant="outline">UI Blocks</Badge>
 
             <div>
-              <h1 className="mb-6 text-pretty text-2xl font-bold lg:text-5xl">Search for YouTube Comments</h1>
+              <h1 className="mb-6 text-pretty text-4xl font-bold sm:text-5xl lg:text-6xl">Search for <span className="text-gradient">YouTube Comments</span></h1>
               <p className="text-muted-foreground lg:text-xl">Enter a video URL or channel name to begin</p>
               <ul>
-                <li>https://www.youtube.com/watch?v=yfWVQ25UmEQ</li>
+                <li>Video URL</li>
+                <li>Channel URL</li>
+                <li>@channel_name</li>
+                <li> _ </li>
+                <li>https://www.youtube.com/watch?v=XMqrkaiNHSc</li>
                 <li>https://www.youtube.com/watch?v=34jW2MBME0Q&t=740s</li>
                 <li>https://www.youtube.com/watch?v=r_nBlutWzp4&ab_channel=TheTrenTwins</li>
+                <li>https://www.youtube.com/watch?v=FFGtU_o86_U</li>
               </ul>
             </div>
 
@@ -84,7 +93,7 @@ const Hero = () => {
             {isLoadingVideo ? (
               <VideoSkeleton />
             ) : (
-              dataVideo && currentContent === "video" &&
+              dataVideo && dataVideo.items.length > 0 && currentContent === "video" &&
               <>
                 <Video video={dataVideo} />
                 <CommentSection channelId = {dataVideo.items[0].snippet.channelId } videoId={videoId} />
@@ -100,7 +109,7 @@ const Hero = () => {
               dataChannel && currentContent === "channel" &&
               <>
                 <Channel channel={dataChannel} />
-                {/* <CommentSection videoId={videoId} /> */}
+                <CommentSection channelId={dataChannel.items[0].id}/>
               </>
 
             )}

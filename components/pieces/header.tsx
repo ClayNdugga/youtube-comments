@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/navigation-menu";
 import { PlayIcon } from "@heroicons/react/24/outline";
 
+import { DarkMode } from "./darkMode";
+
 // "use client"
 
 import * as React from "react";
@@ -23,7 +25,7 @@ const Header = () => {
     <div className="flex flex-row py-6 items-center justify-between z-50">
       <div className="flex flex-row items-center space-x-2">
         <PlayIcon className="h-8 w-8" />
-        <h2 className="text-2xl font-bold"> Youtube Comments...</h2>
+        <h2 className="text-2xl font-bold"> YTC</h2>
       </div>
 
       <NavigationMenu className="z-50">
@@ -40,16 +42,15 @@ const Header = () => {
                     >
                       {/* <Icons.logo className="h-6 w-6" /> */}
                       <div className="mb-2 mt-4 text-lg font-medium">
-                        shadcn/ui
+                        ytc
                       </div>
                       <p className="text-sm leading-tight text-muted-foreground">
-                        Beautifully designed components built with Radix UI and
-                        Tailwind CSS.
+                        Search for youtube comments and songs with spotfy integration
                       </p>
                     </a>
                   </NavigationMenuLink>
                 </li>
-                <ListItem href="/docs" title="Introduction">
+                <ListItem href="/docs" title="1. Introduction">
                   Re-usable components built using Radix UI and Tailwind CSS.
                 </ListItem>
                 <ListItem href="/docs/installation" title="Installation">
@@ -88,7 +89,7 @@ const Header = () => {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <Button className="font-semibold">Sign in</Button>
+      <DarkMode/>
     </div>
   );
 };

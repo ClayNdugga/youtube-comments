@@ -26,7 +26,7 @@ const SongGrid = ({ dataSong }: Props) => {
   return (
     <>
       <div className="flex flex-1 flex-col gap-4 p-4 max-w-6xl mx-auto">
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {dataSong.map((track, index) => (
             <a
               key={index}

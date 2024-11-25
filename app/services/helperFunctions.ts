@@ -29,7 +29,7 @@ export function formatLargeNumber(input: string | number): string {
   const number = typeof(input) === "string" ? parseFloat(input): input; // Convert the input string to a number
 
   if (isNaN(number)) {
-    return input; // Return the original string if it's not a valid number
+    return input.toString(); // Return the original string if it's not a valid number
   }
 
   if (number < 1000) {
@@ -41,7 +41,7 @@ export function formatLargeNumber(input: string | number): string {
   }
 }
 
-export function parseSearch(url: string): [string | null, boolean] {
+export function parseSearch(url: string): [string , boolean] {
   const videoIdRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
   const channelHandleRegex = /@([a-zA-Z0-9_-]+)/;
 
@@ -55,7 +55,7 @@ export function parseSearch(url: string): [string | null, boolean] {
     return [channelMatch[1], false]; 
   }
 
-  return [null, false];
+  return ["", false];
 }
 
 
@@ -64,7 +64,8 @@ export function timeSinceUpload(dateString: string) {
   const now = new Date();
 
   // Calculate the difference in milliseconds
-  const diffInMs = now - uploadDate;
+
+  const diffInMs = now.getTime() - uploadDate.getTime();
 
   // Convert milliseconds to seconds
   const diffInSeconds = Math.floor(diffInMs / 1000);

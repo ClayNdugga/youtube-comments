@@ -7,25 +7,30 @@ const lambdaURL = "https://wicoe2utvi.execute-api.ca-central-1.amazonaws.com/def
 const apiClient = new APIClient<YoutubeFetchResponse<CommentThreadResource>>(lambdaURL);
 
 
-const useComments = (videoId: string, searchTerms: string, order: string) =>
+const useComments = (searchTerms: string, order: string, videoId?: string, channelId?:string) =>
   useInfiniteQuery<YoutubeFetchResponse<CommentThreadResource>, Error>({
     queryKey: ["comments", videoId, order !== "relevance" ? searchTerms : "", order],
     queryFn: ({ pageParam = "" }) => {
       const params: Record<string, any> = {
-        videoId: videoId,
         maxResults: 100,
         textFormat: "plainText",
         order: order,
-        pageToken: pageParam // Pass page token to get the next page of results
+        pageToken: pageParam 
       };
 
       if (order !== "relevance") {
         params.searchTerms = searchTerms;
       }
 
+      if (videoId) {
+        params.videoId = videoId
+      } else {
+        params.allThreadsRelatedToChannelId = channelId
+      }
+
       return apiClient.getAll({ params });
     },
-    enabled: !!videoId && (order === "relevance" || (order === "time" && !!searchTerms)) && order !== "Order By",
+    enabled: (!!channelId || !!videoId) && (order === "relevance" || (order === "time" && !!searchTerms)) && order !== "Order By",
     initialPageParam: ",",
     getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined, // Return nextPageToken if it exists
   });

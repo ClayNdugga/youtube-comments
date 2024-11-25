@@ -5,6 +5,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 import { QueryClientProvider } from "@tanstack/react-query";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+
 import queryClient from "../lib/queryClient";
 
 const geistSans = localFont({
@@ -25,11 +28,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <QueryClientProvider client={queryClient}>
-          {children}
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            {children}
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+          </ThemeProvider>
         </QueryClientProvider>
       </body>
     </html>

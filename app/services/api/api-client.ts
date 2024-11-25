@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
 
-import { YoutubeFetchResponse } from "../../entities/youtube";
 
 class APIClient<T> {
   baseURL: string;
@@ -9,7 +8,7 @@ class APIClient<T> {
     this.baseURL = baseURL;
   }
 
-  getAll = (config: AxiosRequestConfig) => {
+  getAll = <T>(config: AxiosRequestConfig): Promise<T> => {
     return axios
       .get<T>(this.baseURL, config)
       .then((res) => res.data);
