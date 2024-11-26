@@ -155,7 +155,7 @@ export interface YouTubeChannelResource {
       uploads: string;
     };
   };
-  statistics?: {
+  statistics: {
     viewCount: number;
     subscriberCount: number;
     hiddenSubscriberCount: boolean;

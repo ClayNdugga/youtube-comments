@@ -3,7 +3,13 @@ import React, { useState } from 'react';
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from '../ui/input';
 
-const SearchBar = ({ onSearch, className, placeholder }) => {
+interface Props {
+  onSearch: (searchTerm: string) => void
+  className?: string
+  placeholder: string
+}
+
+const SearchBar = ({ onSearch, className, placeholder }: Props) => {
   const [searchTerms, setSearchTerms] = useState("");
 
   const handleSearch = () => {
@@ -14,7 +20,7 @@ const SearchBar = ({ onSearch, className, placeholder }) => {
   };
 
   // Handle key down events
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       handleSearch(); // Call handleSearch when Enter is pressed
     }

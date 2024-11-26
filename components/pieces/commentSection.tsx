@@ -148,7 +148,7 @@ const CommentSection = ({ videoId, channelId }: Props) => {
 
       {errorSong && <p>Error: {errorSong.message}</p>}
       {queuedJob && !(isLoadingSong || dataSong) && <div className="flex justify-center items-center">
-          <ClimbingBoxLoader className="py-12" size={10} />
+          <ClimbingBoxLoader color={theme === "dark"? "white": "black"}className="py-12" size={10} />
           <p className="text-base font-medium">Job in queue...</p>
         </div>}
 

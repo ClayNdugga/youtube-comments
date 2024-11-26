@@ -16,7 +16,7 @@ interface Props {
   video: YoutubeFetchResponse<YouTubeVideoResource>;
 }
 
-const Video = React.forwardRef(({ video }: Props, ref) => {
+const Video = forwardRef<HTMLElement, Props>(({ video }, ref) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const snip = video.items[0];

@@ -15,33 +15,35 @@ interface Props {
   channel: YoutubeFetchResponse<YouTubeChannelResource>;
 }
 
-const Channel = React.forwardRef(({ channel }: Props, ref) => {
+const Channel = forwardRef<HTMLElement, Props>(({ channel }, ref) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const snip = channel.items[0];
 
-  console.log("here")
-  console.log(snip.snippet.description.length)
-  console.log(snip.snippet.description)
+  console.log(snip.snippet.description.length);
+  console.log(snip.snippet.description);
 
   return (
     <section className="pt-32 pb-12" ref={ref}>
       <div className="container flex flex-col space-y-4 w-full">
-          <img src={snip.brandingSettings.image.bannerExternalUrl} alt="placeholder hero" className="max-h-96 w-full rounded-md object-cover" />
+        {snip?.brandingSettings?.image?.bannerExternalUrl && (
+          <img
+            src={snip.brandingSettings.image.bannerExternalUrl}
+            alt="placeholder hero"
+            className="max-h-96 w-full rounded-md object-cover"
+          />
+        )}{" "}
         <div className="">
-
           {/* <img src={snip.snippet.thumbnails.high.url} alt="placeholder hero" className="max-h-96 w-full rounded-md object-cover" /> */}
 
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-    
-
             <div className="flex flex-row items-center space-x-2">
               <Avatar className="w-64 h-64 rounded-full">
                 <AvatarImage src={snip.snippet.thumbnails.medium.url} className="rounded-full" />
                 <AvatarFallback>{snip.snippet.title.slice(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start">
-              <h1 className="my-6 text-pretty text-4xl font-bold lg:text-5xl">{snip.snippet.title}</h1>
+                <h1 className="my-6 text-pretty text-4xl font-bold lg:text-5xl">{snip.snippet.title}</h1>
                 <div className="flex flex-row gap-3 mb-10">
                   <Badge variant="outline">
                     {timeSinceUpload(snip.snippet.publishedAt)}
@@ -60,13 +62,13 @@ const Channel = React.forwardRef(({ channel }: Props, ref) => {
                     <MessageCircleMore className="ml-2 size-4" />
                   </Badge>
                 </div>
-                <p className="text-muted-foreground text-lg">{formatLargeNumber(snip.statistics.subscriberCount)} Subscribers</p>
+                <p className="text-muted-foreground text-lg">
+                  {formatLargeNumber(snip.statistics.subscriberCount)} Subscribers
+                </p>
               </div>
             </div>
-
           </div>
         </div>
-
         <Collapsible>
           <CollapsibleTrigger className="flex items-center text-base font-medium">
             Description
@@ -77,13 +79,12 @@ const Channel = React.forwardRef(({ channel }: Props, ref) => {
             </Button>
           </CollapsibleTrigger>
 
-          
-
-          {snip.snippet.description.length > 0 && <CollapsibleContent className="mt-2 text-sm text-muted-foreground whitespace-pre-wrap text-left">
-            {snip.snippet.description}
-          </CollapsibleContent>}
+          {snip.snippet.description.length > 0 && (
+            <CollapsibleContent className="mt-2 text-sm text-muted-foreground whitespace-pre-wrap text-left">
+              {snip.snippet.description}
+            </CollapsibleContent>
+          )}
         </Collapsible>
-        
       </div>
     </section>
   );

@@ -1,13 +1,12 @@
 import APIClient from "../services/api/api-client";
 // import ms from "ms";
 import { CommentThreadResource, YoutubeFetchResponse } from "../entities/youtube";
-import { useInfiniteQuery  } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const lambdaURL = "https://wicoe2utvi.execute-api.ca-central-1.amazonaws.com/default/youtube-test-axios";
 const apiClient = new APIClient<YoutubeFetchResponse<CommentThreadResource>>(lambdaURL);
 
-
-const useComments = (searchTerms: string, order: string, videoId?: string, channelId?:string) =>
+const useComments = (searchTerms: string, order: string, videoId?: string, channelId?: string) =>
   useInfiniteQuery<YoutubeFetchResponse<CommentThreadResource>, Error>({
     queryKey: ["comments", videoId, order !== "relevance" ? searchTerms : "", order],
     queryFn: ({ pageParam = "" }) => {
@@ -15,7 +14,7 @@ const useComments = (searchTerms: string, order: string, videoId?: string, chann
         maxResults: 100,
         textFormat: "plainText",
         order: order,
-        pageToken: pageParam 
+        pageToken: pageParam,
       };
 
       if (order !== "relevance") {
@@ -23,14 +22,14 @@ const useComments = (searchTerms: string, order: string, videoId?: string, chann
       }
 
       if (videoId) {
-        params.videoId = videoId
+        params.videoId = videoId;
       } else {
-        params.allThreadsRelatedToChannelId = channelId
+        params.allThreadsRelatedToChannelId = channelId;
       }
 
       return apiClient.getAll({ params });
     },
-    enabled: (!!channelId || !!videoId) && (order === "relevance" || (order === "time" && !!searchTerms)) && order !== "Order By",
+    enabled: (!!channelId || !!videoId) && (order === "relevance" || (order === "time" && !!searchTerms)),
     initialPageParam: ",",
     getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined, // Return nextPageToken if it exists
   });

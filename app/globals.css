@@ -68,7 +68,7 @@ body {
 
   }
   .text-gradient {
-    background: linear-gradient(to right, hsl(var(--primary)), hsl(212, 48%, 75%));
+    background: linear-gradient(to right, hsl(212, 87%, 39%), hsl(212, 48%, 75%));
     -webkit-background-clip: text; 
     background-clip: text; 
     color: transparent; 
