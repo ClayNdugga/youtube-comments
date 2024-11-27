@@ -1,3 +1,5 @@
+"use-cleint"
+
 import Header from "@/components/pieces/header";
 import Hero from "@/components/pieces/hero";
 

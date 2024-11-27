@@ -1,11 +1,10 @@
-import { ArrowDownRight, MessageCircleMore, ThumbsUp, Eye, VideoIcon, Calendar, ChevronUp } from "lucide-react";
+import { MessageCircleMore, Eye, VideoIcon, Calendar, ChevronUp } from "lucide-react";
 import React, { forwardRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { YouTubeChannelResource, YoutubeFetchResponse, YouTubeVideoResource } from "../../app/entities/youtube";
-import { formatTimestamp, formatLargeNumber, timeSinceUpload } from "../../app/services/helperFunctions";
-import SearchBar from "./searchBar";
+import { YouTubeChannelResource, YoutubeFetchResponse } from "../../app/entities/youtube";
+import { formatLargeNumber, timeSinceUpload } from "../../app/services/helperFunctions";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@radix-ui/react-collapsible";
 
@@ -25,14 +24,21 @@ const Channel = forwardRef<HTMLElement, Props>(({ channel }, ref) => {
 
   return (
     <section className="pt-32 pb-12" ref={ref}>
+
       <div className="container flex flex-col space-y-4 w-full">
-        {snip?.brandingSettings?.image?.bannerExternalUrl && (
+
+        {/* {snip?.brandingSettings?.image?.bannerExternalUrl && (
           <img
             src={snip.brandingSettings.image.bannerExternalUrl}
             alt="placeholder hero"
             className="max-h-96 w-full rounded-md object-cover"
           />
-        )}{" "}
+        )} */}
+        
+        {" "}
+
+
+
         <div className="">
           {/* <img src={snip.snippet.thumbnails.high.url} alt="placeholder hero" className="max-h-96 w-full rounded-md object-cover" /> */}
 
@@ -90,4 +96,5 @@ const Channel = forwardRef<HTMLElement, Props>(({ channel }, ref) => {
   );
 });
 
+Channel.displayName = 'Channel';
 export default Channel;

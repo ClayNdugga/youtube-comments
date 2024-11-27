@@ -8,25 +8,26 @@ import VideoSkeleton from "./videoSkeleton";
 import useYoutubeVideo from "@/app/hooks/useYoutubeVideo";
 
 import { parseSearch } from "@/app/services/helperFunctions";
-import Background from "./background";
 import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { ExternalLink } from "lucide-react";
 import useYoutubeChannel from "@/app/hooks/useYoutubeChannel";
 import Channel from "./channel";
 import { useTheme } from "next-themes";
 
+
+import { sendGTMEvent } from '@next/third-parties/google'
+
+
 const Hero = () => {
   const [videoId, setVideoId] = useState("");
   const [channelId, setChannelId] = useState("");
-  const [searchTerms, setSearchTerms] = useState("");
+  const [, setSearchTerms] = useState("");
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [currentContent, setCurrentContent] = useState("");
 
   const { data: dataVideo, isLoading: isLoadingVideo, error: errorVideo } = useYoutubeVideo(videoId);
   const { data: dataChannel, isLoading: isLoadingChannel, error: errorChannel } = useYoutubeChannel(channelId, true);
 
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
 
   const handleVideoSearch = (urlOrSearch: string) => {
     const [parsedId, isVideo] = parseSearch(urlOrSearch);
@@ -39,6 +40,7 @@ const Hero = () => {
       setChannelId(parsedId);
     }
 
+    sendGTMEvent({ event: 'searched', value: parsedId })
     setSearchTerms("");
   };
 
@@ -61,46 +63,43 @@ const Hero = () => {
         {/* <Background /> */}
 
         <main className="flex-grow flex flex-col justify-start items-center text-center w-full pt-[5vh]">
-          {/* <div className="z-10 flex flex-col items-center gap-6 text-center">
-            <img src="https://www.shadcnblocks.com/images/block/block-1.svg" alt="logo" className="h-16" />
-            <Badge variant="outline">UI Blocks</Badge>
-
-            <div>
-              <h1 className="mb-6 text-pretty text-4xl font-bold sm:text-5xl lg:text-6xl">Search for <span className="text-gradient">YouTube Comments</span></h1>
-              <p className="text-muted-foreground lg:text-xl">Enter a video URL or channel name to begin</p>
-              <ul>
-                <li>Video URL</li>
-                <li>Channel URL</li>
-                <li>@channel_name</li>
-                <li> _ </li>
-                <li>https://www.youtube.com/watch?v=XMqrkaiNHSc</li>
-                <li>https://www.youtube.com/watch?v=34jW2MBME0Q&t=740s</li>
-                <li>https://www.youtube.com/watch?v=r_nBlutWzp4&ab_channel=TheTrenTwins</li>
-                <li>https://www.youtube.com/watch?v=FFGtU_o86_U</li>
-              </ul>
-            </div>
-            <SearchBar className="py-5 w-3/4" onSearch={handleVideoSearch} placeholder={"Search"} />
-          </div> */}
+         
+          {/* <Starfield /> */}
 
           <div className="z-10 flex flex-col items-center gap-10 text-center">
-            {/* Logo Section */}
-            {/* <img src="https://www.shadcnblocks.com/images/block/block-1.svg" alt="Logo" className="h-16 mb-4" /> */}
-
-            {/* Badge Section */}
             <Badge variant="outline" className="text-sm">
               Search Tool
             </Badge>
 
-            {/* Heading and Description */}
             <div className="max-w-3xl space-y-4">
               <h1 className="mb-6 text-pretty text-5xl font-bold sm:text-6xl lg:text-7xl">
                 Discover Insights from <span className="text-gradient">YouTube Comments</span>
               </h1>
 
-              <p className="text-muted-foreground text-lg sm:text-xl">
-                Search for keywords in YouTube comments. Enter a video or channel URL to begin
-              </p>
-              <ul>
+              <div className="flex flex-col items-center align-middle">
+                <p className="text-muted-foreground text-lg sm:text-xl">
+                  Search for keywords in YouTube comments. Enter a video or channel URL to begin.
+                </p>
+                <div className="flex flex-row items-center gap-2">
+                  <p className="text-muted-foreground text-lg sm:text-xl">
+                    Use
+                  </p>
+                  <img
+                        src={
+                          theme === "light"
+                            ? "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Black.png"
+                            : "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_White.png"
+                        }
+                        alt="icon"
+                        className="w-4 h-4"
+                      />
+                  <p className="text-muted-foreground text-lg sm:text-xl">
+                    Spotify Integration to search the comments for songs.
+                  </p>
+                </div>
+              </div>
+
+              {/* <ul>
                   <li>https://www.youtube.com/watch?v=4HaA9rIAsm0</li>
                   <li>https://www.youtube.com/watch?v=WTJB8zQW1Uo</li>
                   <li>https://www.youtube.com/watch?v=LCPXgoIt5nE</li>
@@ -151,61 +150,19 @@ const Hero = () => {
                   <li>https://www.youtube.com/watch?v=bmXWoBlxLek</li>
                   <li>https://www.youtube.com/watch?v=UHqqQG5FN4s</li>
                   <li>https://www.youtube.com/watch?v=-rcB3_z0dN8</li>
-              </ul>
+              </ul> */}
+
+              {/* ATTEMPTING LEG DAY (WE HIT ARMS?) */}
+              {/* MASS BUILDING ARM DAY */}
+
             </div>
 
-            {/* Feature Highlights */}
-            {/* <div className="flex flex-col items-center space-y-6 sm:space-y-0 sm:space-x-8 sm:flex-row">
-              <div className="max-w-xs text-center">
-                <h3 className="text-xl font-semibold text-primary">Search by Video</h3>
-                <p className="text-sm text-muted-foreground">
-                  Enter a YouTube video URL to analyze its comments and find meaningful mentions or insights.
-                </p>
-              </div>
-              <div className="max-w-xs text-center">
-                <h3 className="text-xl font-semibold text-primary">Channel-Wide Search</h3>
-                <p className="text-sm text-muted-foreground">
-                  Explore all comments on a channel by providing a Channel URL or handle (e.g., @channel_name).
-                </p>
-              </div>
-              <div className="max-w-xs text-center">
-                <div className="flex flex-row items-center gap-2">
-                  <img
-                    src={
-                      theme === "light"
-                        ? "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Black.png"
-                        : "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_White.png"
-                    }
-                    alt="icon"
-                    className="w-4 h-4"
-                  />
-                  <h3 className="text-xl font-semibold text-primary">Spotify Integration</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Automatically match songs found in comments with Spotify and create a playlist in one click!
-                </p>
-              </div>
-            </div> */}
+
+        
 
             {/* Examples and Search Section */}
             <div className="flex flex-col w-full max-w-4xl items-center">
-              {/* <div className="text-left w-full max-w-md bg-white p-4 shadow-md rounded-lg border border-gray-200">
-                <h2 className="text-lg font-semibold mb-2 text-gray-700">Example Inputs:</h2>
-                <ul className="list-disc pl-6 text-gray-600 text-sm space-y-1">
-                  <li>
-                    <code>Video URL:</code>{" "}
-                    <span className="text-blue-500">https://www.youtube.com/watch?v=XMqrkaiNHSc</span>
-                  </li>
-
-                  <li>
-                    <code>Channel URL:</code>{" "}
-                    <span className="text-blue-500">https://www.youtube.com/channel/UC1234567</span>
-                  </li>
-                  <li>
-                    <code>Handle:</code> <span className="text-blue-500">@example_channel</span>
-                  </li>
-                </ul>
-              </div> */}
+            
               <SearchBar
                 className="mt-6 py-4 w-4/5 mx-auto"
                 onSearch={handleVideoSearch}
@@ -215,6 +172,7 @@ const Hero = () => {
           </div>
 
           {errorVideo && <p>Error: {errorVideo.message}</p>}
+          {errorChannel && <p>Error: {errorChannel.message}</p>}
 
           <div
             className={`flex-grow ${
@@ -229,7 +187,7 @@ const Hero = () => {
               dataVideo.items.length > 0 &&
               currentContent === "video" && (
                 <>
-                  <Video video={dataVideo} />
+                  <Video video={dataVideo} searchFn={handleVideoSearch}/>
                   <CommentSection channelId={dataVideo.items[0].snippet.channelId} videoId={videoId} />
                 </>
               )
@@ -255,16 +213,6 @@ const Hero = () => {
             )}
           </div>
 
-          {/* {isLoadingVideo && (
-            <div className="h-screen" ref={contentRef}>
-              <VideoSkeleton ref={contentRef} />
-            </div>
-          )}
-          {dataVideo && (
-            <div classname="h-screen" >
-              <Video video={dataVideo} />
-            </div>
-          )} */}
         </main>
       </div>
     </>
@@ -272,6 +220,33 @@ const Hero = () => {
 };
 
 export default Hero;
+
+
+
+
+// under section
+// <div className="z-10 flex flex-col items-center gap-6 text-center">
+//           <img src="https://www.shadcnblocks.com/images/block/block-1.svg" alt="logo" className="h-16" />
+//           <Badge variant="outline">UI Blocks</Badge>
+
+//           <div>
+//             <h1 className="mb-6 text-pretty text-4xl font-bold sm:text-5xl lg:text-6xl">Search for <span className="text-gradient">YouTube Comments</span></h1>
+//             <p className="text-muted-foreground lg:text-xl">Enter a video URL or channel name to begin</p>
+//             <ul>
+//               <li>Video URL</li>
+//               <li>Channel URL</li>
+//               <li>@channel_name</li>
+//               <li> _ </li>
+//               <li>https://www.youtube.com/watch?v=XMqrkaiNHSc</li>
+//               <li>https://www.youtube.com/watch?v=34jW2MBME0Q&t=740s</li>
+//               <li>https://www.youtube.com/watch?v=r_nBlutWzp4&ab_channel=TheTrenTwins</li>
+//               <li>https://www.youtube.com/watch?v=FFGtU_o86_U</li>
+//             </ul>
+//           </div>
+//           <SearchBar className="py-5 w-3/4" onSearch={handleVideoSearch} placeholder={"Search"} />
+//         </div> 
+
+
 
 /* <div className="max-w-2xl w-full mx-auto px-4">
     <h1 className="text-7xl font-bold mb-4">Search for YouTube Comments</h1>

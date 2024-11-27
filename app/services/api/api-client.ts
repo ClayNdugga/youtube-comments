@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 
 
-class APIClient<T> {
+class APIClient {
   baseURL: string;
 
   constructor(baseURL: string) {

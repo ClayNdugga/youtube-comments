@@ -3,18 +3,19 @@ import APIClient from "../services/api/api-client";
 import { CommentThreadResource, YoutubeFetchResponse } from "../entities/youtube";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-const lambdaURL = "https://wicoe2utvi.execute-api.ca-central-1.amazonaws.com/default/youtube-test-axios";
-const apiClient = new APIClient<YoutubeFetchResponse<CommentThreadResource>>(lambdaURL);
+const lambdaURL = "https://0tccyg2utb.execute-api.ca-central-1.amazonaws.com/youtube-test-axios";
+const apiClient = new APIClient(lambdaURL);
+// const apiClient = new APIClient<YoutubeFetchResponse<CommentThreadResource>>(lambdaURL);
 
 const useComments = (searchTerms: string, order: string, videoId?: string, channelId?: string) =>
   useInfiniteQuery<YoutubeFetchResponse<CommentThreadResource>, Error>({
     queryKey: ["comments", videoId, order !== "relevance" ? searchTerms : "", order],
     queryFn: ({ pageParam = "" }) => {
-      const params: Record<string, any> = {
-        maxResults: 100,
+      const params: Record<string, string | undefined> = {
+        maxResults: "100",
         textFormat: "plainText",
         order: order,
-        pageToken: pageParam,
+        pageToken: pageParam as string,
       };
 
       if (order !== "relevance") {

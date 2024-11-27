@@ -1,12 +1,3 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
 import { CommentThreadResource } from "@/app/entities/youtube";
 import { AvatarImage, Avatar } from "../ui/avatar";
 

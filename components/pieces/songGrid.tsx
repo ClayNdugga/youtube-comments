@@ -1,6 +1,6 @@
-import { SpotifyResponse, Track } from "@/app/entities/spotify";
-import { traceGlobals } from "next/dist/trace/shared";
+import { Track } from "@/app/entities/spotify";
 import React, { useState } from "react";
+// import Image from "next/image"
 
 interface Props {
   dataSong: Track[];
@@ -15,7 +15,7 @@ const SongGrid = ({ dataSong }: Props) => {
           setAudio(audio);
         }
       };
-    
+        
       const handleMouseLeave = () => {
         if (audio) {
           audio.pause();

@@ -1,35 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import CommentCard from "./comment";
-import { YoutubeFetchResponse, CommentThreadResource } from "../../app/entities/youtube";
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SearchBar from "./searchBar";
 import useYoutubeComments from "@/app/hooks/useYoutubeComments";
 import CommentSkeleton from "./commentSkeleton";
 import { Button } from "../ui/button";
 import useSpotifyTracks from "@/app/hooks/useSpotifyTracks";
 import SongGrid from "./songGrid";
-import { Skeleton } from "../ui/skeleton";
 import AlbumGridSkeleton from "./albumGridSkeleton";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 import PropogateLoader from "react-spinners/PropagateLoader";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import useUniqueSongs from "@/app/hooks/useUniqueSongs";
-import { SongCarousel } from "./songCarousel";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Arrow } from "@radix-ui/react-select";
 import { useTheme } from "next-themes";
 
 interface Props {
@@ -53,10 +38,10 @@ const CommentSection = ({ videoId, channelId }: Props) => {
   const commentRef = useRef<HTMLDivElement | null>(null);
 
   const [page, setPage] = useState(0);
-  const [songsPerPage, setSongsPerPage] = useState(4);
+  const [songsPerPage] = useState(4);
   const [totalPages, setTotalPages] = useState(0);
 
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
 
   const {
     data: dataComment,
@@ -73,7 +58,7 @@ const CommentSection = ({ videoId, channelId }: Props) => {
     isLoading: isLoadingSong,
     error: errorSong,
   } = useSpotifyTracks(songQueries, page, songsPerPage);
-  const { data: SongQ, isLoading: isLoadingUnique, error: errorUnique } = useUniqueSongs(channelId, search, videoId);
+  const { data: SongQ } = useUniqueSongs(channelId, search, videoId);
 
   useEffect(() => {
     if (isLoadingComment) {
@@ -136,14 +121,14 @@ const CommentSection = ({ videoId, channelId }: Props) => {
 
         <SearchBar className="w-3/4 mb-10" onSearch={handleCommentSearch} placeholder={"Search Comments"} />
         {/* <Button className="w-[150px] bg-green-500 flex items-center space-x-2"> */}
-        <Button className="w-[150px] flex items-center space-x-2 bg-foreground" onClick={handleSongSearch}>
+        {(videoId && <Button className="w-[150px] flex items-center space-x-2 bg-foreground" onClick={handleSongSearch}>
           <img
             src={ theme === "dark" ? "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Black.png" : "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_White.png"}
             alt="icon"
             className="w-4 h-4"
           />
           <span> </span>Song Search
-        </Button>
+        </Button>)}
       </div>
 
       {errorSong && <p>Error: {errorSong.message}</p>}

@@ -2,8 +2,9 @@ import APIClient from "../services/api/api-client";
 import { SpotifyResponse, Track } from "../entities/spotify";
 import { useQuery } from "@tanstack/react-query";
 
-const lambdaURL = "https://rrnmze6u8k.execute-api.ca-central-1.amazonaws.com/default/spotify-tracks";
-const apiClient = new APIClient<SpotifyResponse<Track>>(lambdaURL);
+const lambdaURL = " ";
+// const apiClient = new APIClient<SpotifyResponse<Track>>(lambdaURL);
+const apiClient = new APIClient(lambdaURL);
 
 
 

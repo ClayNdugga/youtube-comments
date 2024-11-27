@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"; // Import the Skeleton component from Shadcn
 
 
-const VideoSkeleton = forwardRef((Props, ref) => {
+const VideoSkeleton = forwardRef<HTMLElement>((Props, ref) => {
   return (
     <section className="py-32" ref={ref}>
       <div className="container mx-auto">
@@ -43,6 +43,8 @@ const VideoSkeleton = forwardRef((Props, ref) => {
     </section>
   );
 });
+
+VideoSkeleton.displayName = 'VideoSkeleton';
 
 export default VideoSkeleton;
 
