@@ -37,11 +37,11 @@ This project provides a scalable and fault-tolerant backend architecture that en
 
 ## Architecture Overview
 
-The backend architecture is built on AWS serverless technologies to ensure scalability, cost-effectiveness, and ease of maintenance. The system consists of several AWS components working together:
+The backend architecture is in AWS. The following is a rough archtecture diagram:
 
-![alt text]("https://github.com/ClayNdugga/youtube-comments/tree/main/public/images/placeholderAvatar.png?raw=true")
+<!-- ![alt text]("https://github.com/ClayNdugga/youtube-comments/tree/main/public/images/placeholderAvatar.png?raw=true") -->
 
-<!-- ![alt text]("https://github.com/ClayNdugga/youtube-comments/tree/main/public/images/YTC architecture.png?raw=true") -->
+![alt text]("https://github.com/ClayNdugga/youtube-comments/blob/main/public/images/YTC%20architecture.png?raw=true")
 
 
 - **Amazon API Gateway**: Acts as the entry point for all API requests, handling load balancing and routing to the appropriate services.
@@ -50,6 +50,32 @@ The backend architecture is built on AWS serverless technologies to ensure scala
 - **Amazon DynamoDB**: Serves as the central store for tracking job states and ensuring idempotency.
 - **Amazon S3**: Stores raw comments and processed song data organized systematically.
 - **Spotify API**: Used for searching and fetching song details based on extracted song names.
+
+## Processing Workflow
+
+1. **Job Submission**:
+   - When a user requests song extraction for a channel or video, the API Gateway invokes a Lambda function that checks the DynamoDB table for existing jobs.
+   - If no existing job is found, the metadata of the video or channel Id in S3 is checked for recency.
+   - If the cache is outdated a new job entry is created in DynamoDB, and the channel or video ID is placed into the appropriate SQS queue.
+
+2. **Channel Processing**:
+   - A Lambda function retrieves channel IDs from the Channel Queue.
+   - It fetches all video IDs associated with the channel and places them into the Video Queue.
+   - Updates the job status in DynamoDB to reflect progress.
+
+3. **Video Processing**:
+   - Another Lambda function processes video IDs from the Video Queue.
+   - Fetches all comments for each video using the YouTube Data API.
+   - Stores raw comments in Amazon S3 under the corresponding channel and video folders.
+
+4. **Song Extraction**:
+   - A dedicated Lambda function runs the song searching algorithm on the comments.
+   - Extracted song names are processed to identify duplicates and similarities.
+   - Stores the list of unique songs back into Amazon S3.
+
+5. **Job Completion**:
+   - Updates the job status in DynamoDB to "complete" once processing is finished.
+   - Notifies the user through API responses or callbacks.
 
 ## Components
 
@@ -73,31 +99,7 @@ Lambda functions are the backbone of the processing pipeline:
 - **Concurrency and Scaling**: Lambda functions can scale horizontally to match the workload, with multiple concurrent invocations handling tasks from the queues.
 - **Idempotency**: Designed to be idempotent, ensuring that repeated invocations (due to retries or failures) do not lead to inconsistent states or duplicate processing.
 
-#### Processing Workflow
 
-1. **Job Submission**:
-   - When a user requests song extraction for a channel or video, the API Gateway invokes a Lambda function that checks the DynamoDB table for existing jobs.
-   - If no existing job is found, the metadata of the video or channel Id in s3 is checked for recency.
-   - If the cache is outdated a new job entry is created in DynamoDB, and the channel or video ID is placed into the appropriate SQS queue.
-
-2. **Channel Processing**:
-   - A Lambda function retrieves channel IDs from the Channel Queue.
-   - It fetches all video IDs associated with the channel and places them into the Video Queue.
-   - Updates the job status in DynamoDB to reflect progress.
-
-3. **Video Processing**:
-   - Another Lambda function processes video IDs from the Video Queue.
-   - Fetches all comments for each video using the YouTube Data API.
-   - Stores raw comments in Amazon S3 under the corresponding channel and video folders.
-
-4. **Song Extraction**:
-   - A dedicated Lambda function runs the song searching algorithm on the comments.
-   - Extracted song names are processed to identify duplicates and similarities.
-   - Stores the list of unique songs back into Amazon S3.
-
-5. **Job Completion**:
-   - Updates the job status in DynamoDB to "complete" once processing is finished.
-   - Notifies the user through API responses or callbacks.
 
 #### Job State Management with DynamoDB
 
@@ -180,7 +182,7 @@ The function can take values over the range $[0,1]$, the closer the value to $1$
 #### Grouping Algorithm Implementation
 
 ```python
-def group_similar_songs(song_strings, threshold=0.9):
+def group_similar_songs(song_strings: List[str], threshold=0.9) -> (List[str], List[List[str]]):
     """
     Group similar songs efficiently by precomputing normalized strings and Q-grams.
     """
@@ -213,7 +215,10 @@ def group_similar_songs(song_strings, threshold=0.9):
     groups.sort(key=len, reverse=True)
     representative_songs = [select_representative(group) for group in groups]
     return representative_songs, groups
+
 ```
+
+The algorithm groups all songs that are identified as similiar (under the specified threshold), and chooses a representative for each. The return value is list of all the unique songs within the comments.
 
 #### Benefits
 
@@ -221,25 +226,6 @@ def group_similar_songs(song_strings, threshold=0.9):
 - **Accuracy**: Groups together songs with high similarity, reducing duplicates sent to the Spotify API.
 - **Scalability**: Suitable for scaling with increased data due to low time complexity.
 
-## Data Flow
-
-1. **User Request**: A user initiates a request to extract songs from a channel or video via the frontend interface.
-2. **API Gateway**: Receives the request and triggers the appropriate Lambda function.
-3. **Job Handling**:
-   - The Lambda function checks the DynamoDB table for existing jobs.
-   - Creates a new job entry if none exists and updates the job state.
-   - Places the channel or video ID into the corresponding SQS queue.
-4. **Queue Processing**:
-   - Lambda functions consume messages from the Channel and Video Queues.
-   - For channels, video IDs are fetched and queued.
-   - For videos, comments are retrieved and stored in S3.
-5. **Comment Processing**:
-   - Song extraction Lambda functions process comments from S3.
-   - The song searching algorithm identifies and groups song names.
-   - Results are stored back into S3 under the appropriate path.
-6. **Job Completion**:
-   - Job status in DynamoDB is updated to "complete".
-   - Users can retrieve the results through the API or receive notifications.
 
 ## Data Models
 
@@ -278,7 +264,6 @@ s3://bucket-name/
 ```
 
 
-
 ## AWS Services Used
 
 - **Amazon API Gateway**: Handles API requests, Load Balancing, Authentication, and routes API requests to Lambda functions.
@@ -291,18 +276,10 @@ s3://bucket-name/
 - **Spotify API**: External service used for song searches and data retrieval.
 - **YouTube Data API**: Fetches video and comment data from YouTube.
 
-## Scalability and Fault Tolerance
-
-- **Serverless Architecture**: Automatically scales with the workload, reducing the need to manage infrastructure.
-- **Stateless Functions**: Lambda functions are stateless, enhancing scalability and reliability.
-- **Concurrency Controls**: Manages concurrency levels to prevent resource exhaustion.
-- **Auto Scaling for DynamoDB**: Adjusts read/write capacities based on demand.
-- **SQS Queues**: Decouples system components, allowing each part to scale independently.
 
 ## Error Handling and Idempotency
 
 - **Idempotent Lambda Functions**: Functions can be safely retried without causing inconsistent states.
-- **Retries and Backoff Policies**: Configured to handle transient errors and throttling issues.
 - **Dead-Letter Queues**: Messages that can't be processed after retries are moved to a dead-letter queue for manual investigation.
 - **Logging and Monitoring**: CloudWatch collects logs for debugging and performance monitoring.
 
@@ -310,34 +287,5 @@ s3://bucket-name/
 
 - **Result Caching**: Stores processed results in S3 and checks for existing data before processing new requests.
 - **Cache Invalidation**: Implements policies to invalidate cached data after a certain period to ensure data freshness.
-- **Edge Caching**: Uses AWS CloudFront (if applicable) to cache API responses at edge locations for faster delivery.
+- **Edge Caching**: Uses AWS CloudFront to cache API responses at edge locations for faster delivery.
 
-## Security Considerations
-
-- **Input Validation**: Validates all input data to prevent injection attacks.
-- **Authentication and Authorization**:
-  - Secure API endpoints with authentication mechanisms (e.g., API keys, IAM roles).
-  - Apply the principle of least privilege in IAM policies.
-- **Data Encryption**:
-  - Enable encryption at rest for S3 buckets and DynamoDB tables.
-  - Use HTTPS endpoints to encrypt data in transit.
-- **Secrets Management**: Store API keys and sensitive information securely using AWS Secrets Manager or AWS Systems Manager Parameter Store.
-
-## Deployment
-
-- **Infrastructure as Code**: Uses AWS CloudFormation or AWS SAM templates for consistent and repeatable deployments.
-- **CI/CD Pipeline**:
-  - Integrate with AWS CodePipeline and CodeDeploy for automated deployments.
-  - Incorporate testing and code quality checks in the pipeline.
-- **Environment Management**: Supports multiple environments (e.g., development, staging, production) with parameterized configurations.
-
-
-
-## Future Improvements
-
-- **Enhanced NLP**: Incorporate advanced natural language processing techniques to improve song extraction accuracy.
-- **User Notifications**: Implement email or push notifications to inform users when processing is complete.
-- **Webhooks Integration**: Allow clients to subscribe to job status updates via webhooks.
-- **GraphQL API**: Provide a flexible API for clients to query data.
-- **Analytics and Reporting**: Collect usage metrics to analyze popular songs and trends.
-- **Internationalization**: Extend support for multiple languages in comment processing.
