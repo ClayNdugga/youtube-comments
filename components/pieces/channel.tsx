@@ -46,7 +46,7 @@ const Channel = forwardRef<HTMLElement, Props>(({ channel }, ref) => {
             <div className="flex flex-row items-center space-x-2">
               <Avatar className="w-64 h-64 rounded-full">
                 <AvatarImage src={snip.snippet.thumbnails.medium.url} className="rounded-full" />
-                <AvatarFallback>{snip.snippet.title.slice(0, 2).toUpperCase()}</AvatarFallback>
+                <AvatarFallback><img src="/images/placeholderAvatar.png"></img></AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start">
                 <h1 className="my-6 text-pretty text-4xl font-bold lg:text-5xl">{snip.snippet.title}</h1>

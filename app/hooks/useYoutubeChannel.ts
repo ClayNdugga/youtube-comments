@@ -4,9 +4,7 @@ import APIClient from "../services/api/api-client";
 import { YouTubeChannelResource, YoutubeFetchResponse } from "../entities/youtube";
 import { useQuery } from "@tanstack/react-query";
 
-const lambdaURL = "https://0tccyg2utb.execute-api.ca-central-1.amazonaws.com/youtube-channel";
-const apiClient = new APIClient(lambdaURL);
-// const apiClient = new APIClient<YouTubeChannelResource>(lambdaURL);
+const apiClient = new APIClient("/youtube-channel");
 
 const useYoutubeChannel = (identifier: string, isForHandle: boolean) =>
   useQuery<YoutubeFetchResponse<YouTubeChannelResource>, Error>({
@@ -18,7 +16,6 @@ const useYoutubeChannel = (identifier: string, isForHandle: boolean) =>
       return apiClient.getAll({ params });     
     },
     enabled: !!identifier,
-    // staleTIme: ms("1h"),
   });
 
 export default useYoutubeChannel;

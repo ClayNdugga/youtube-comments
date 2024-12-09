@@ -30,7 +30,7 @@ const Video = forwardRef<HTMLElement, Props>(({ video, searchFn }, ref) => {
   return (
     <section className="pt-32 pb-12" ref={ref}>
       <div className="container flex flex-col space-y-4">
-        <div className="grid items-center gap-8 lg:grid-cols-2">
+        <div className="grid items-center sm:grid-cols-1 gap-8 lg:grid-cols-2">
           <img
             src={snip.snippet.thumbnails.high ? snip.snippet.thumbnails.high.url : snip.snippet.thumbnails.default.url}
             alt="placeholder hero"

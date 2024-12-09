@@ -3,9 +3,7 @@ import APIClient from "../services/api/api-client";
 import { CommentThreadResource, YoutubeFetchResponse } from "../entities/youtube";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-const lambdaURL = "https://0tccyg2utb.execute-api.ca-central-1.amazonaws.com/youtube-test-axios";
-const apiClient = new APIClient(lambdaURL);
-// const apiClient = new APIClient<YoutubeFetchResponse<CommentThreadResource>>(lambdaURL);
+const apiClient = new APIClient("/youtube-test-axios");
 
 const useComments = (searchTerms: string, order: string, videoId?: string, channelId?: string) =>
   useInfiniteQuery<YoutubeFetchResponse<CommentThreadResource>, Error>({
@@ -32,29 +30,8 @@ const useComments = (searchTerms: string, order: string, videoId?: string, chann
     },
     enabled: (!!channelId || !!videoId) && (order === "relevance" || (order === "time" && !!searchTerms)),
     initialPageParam: ",",
-    getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined, // Return nextPageToken if it exists
+    getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined, 
   });
 
 export default useComments;
 
-// const useComments = (videoId: string, searchTerms: string, order: string) =>
-//   useQuery<YoutubeFetchResponse<CommentThreadResource>, Error>({
-//     queryKey:  ["comments", videoId, order != "relevance" ? searchTerms: "" , order],
-//     queryFn: () => {
-//       const params: Record<string, any> = {
-//         videoId: videoId,
-//         maxResults: 100,
-//         textFormat: "plainText",
-//         order: order
-//       };
-
-//       if (order !== "relevance") {
-//         params.searchTerms = searchTerms;
-//       }
-
-//       return apiClient.getAll({ params });
-//     },
-//     enabled: !!videoId && (order === "relevance" || (order === "time" && !!searchTerms)) && (order != 'Order By')
-//   });
-
-// export default useComments;

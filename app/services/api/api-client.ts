@@ -4,8 +4,8 @@ import axios, { AxiosRequestConfig } from "axios";
 class APIClient {
   baseURL: string;
 
-  constructor(baseURL: string) {
-    this.baseURL = baseURL;
+  constructor(endpoint: string) {
+    this.baseURL = "https://0tccyg2utb.execute-api.ca-central-1.amazonaws.com"+ endpoint;
   }
 
   getAll = <T>(config: AxiosRequestConfig): Promise<T> => {

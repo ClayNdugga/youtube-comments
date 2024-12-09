@@ -114,16 +114,16 @@ const CommentSection = ({ videoId, channelId }: Props) => {
   return (
     <>
 
-      <div className="flex flex-row justify-center space-x-4 pt-12" ref={commentRef}>
+      <div className="flex flex-row justify-center space-x-4 pt-12 w-full" ref={commentRef}>
         {!!videoId && <Button variant="outline" className="w-[150px]" onClick={handleOrdering}>
           Top Comments
         </Button>}
 
-        <SearchBar className="w-3/4 mb-10" onSearch={handleCommentSearch} placeholder={"Search Comments"} />
+        <SearchBar className="w-7/12 min-w-7/12 mb-10" onSearch={handleCommentSearch} placeholder={"Search Comments"} />
         {/* <Button className="w-[150px] bg-green-500 flex items-center space-x-2"> */}
         {(videoId && <Button className="w-[150px] flex items-center space-x-2 bg-foreground" onClick={handleSongSearch}>
           <img
-            src={ theme === "dark" ? "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Black.png" : "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_White.png"}
+            src={ theme === "dark" ? "/images/spotifyBlack.png" : "/images/spotifyWhite.png"}
             alt="icon"
             className="w-4 h-4"
           />
@@ -164,7 +164,9 @@ const CommentSection = ({ videoId, channelId }: Props) => {
       </div>
 
       {errorComment && <p>Error: {errorComment.message}</p>}
-      <div className={`flex-grow ${isLoadingComment || dataComment ? "h-screen" : "h-auto"} `}>
+
+      <div className={`flex-grow min-w-full ${isLoadingComment || dataComment ? "h-screen" : "h-auto"} `}>
+      
         {isLoadingComment
           ? commentSkeletons.map((skeleton) => <CommentSkeleton key={skeleton} />)
           : dataComment && (
@@ -178,7 +180,7 @@ const CommentSection = ({ videoId, channelId }: Props) => {
                   }} // Function to fetch next page
                   hasMore={!!hasNextPage} // Check if there's more data to load
                   loader={<></>}
-                  scrollThreshold={1.0} // Fetch more when 90% scrolled
+                  scrollThreshold={0.9} // Fetch more when 90% scrolled
                 >
                   {dataComment.pages.flatMap((page) =>
                     page.items.map((commentResource) => (

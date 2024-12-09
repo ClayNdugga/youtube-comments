@@ -6,9 +6,7 @@ import {
 } from "../entities/youtube";
 import { useQuery } from "@tanstack/react-query";
 
-const lambdaURL = "https://0tccyg2utb.execute-api.ca-central-1.amazonaws.com/youtube-video";
-const apiClient = new APIClient(lambdaURL);
-// const apiClient = new APIClient<YouTubeVideoResource>(lambdaURL);
+const apiClient = new APIClient("/youtube-video");
 
 const useYoutubeVideo = (videoId: string) =>
   useQuery<YoutubeFetchResponse<YouTubeVideoResource>, Error>({
@@ -19,8 +17,7 @@ const useYoutubeVideo = (videoId: string) =>
           id: videoId,
         },
       }),
-    enabled: !!videoId, //only run if videoId is not empty
-    // staleTIme: ms("1h"),
+    enabled: !!videoId,
   });
 
 export default useYoutubeVideo;

@@ -30,7 +30,7 @@ const SongGrid = ({ dataSong }: Props) => {
           {dataSong.map((track, index) => (
             <a
               key={index}
-              href={track.external_urls.spotify}
+              href={track?.external_urls.spotify || '#'}
               target="_blank"
               rel="noopener noreferrer"
               onMouseEnter={() => handleMouseEnter(track.preview_url)}

@@ -3,16 +3,15 @@ export function formatTimestamp(input: string): string {
   const match = input.match(regex);
 
   if (!match) {
-    return ""; // Return an empty string if the format is invalid
+    return ""; 
   }
 
   const hours = match[1] ? parseInt(match[1]) : 0;
   const minutes = match[2] ? parseInt(match[2]) : 0;
   const seconds = match[3] ? parseInt(match[3]) : 0;
 
-  // Return format according to the specified conditions
   if (hours > 0) {
-    return `${hours}h ${minutes}m`; // Return hours and minutes
+    return `${hours}h ${minutes}m`; 
   }
   if (minutes > 0) {
     return `${minutes}m`;
@@ -22,22 +21,22 @@ export function formatTimestamp(input: string): string {
     return `${seconds}s`;
   }
 
-  return ""; // Fallback for empty input or unrecognized format
+  return ""; 
 }
 
 export function formatLargeNumber(input: string | number): string {
-  const number = typeof(input) === "string" ? parseFloat(input): input; // Convert the input string to a number
+  const number = typeof(input) === "string" ? parseFloat(input): input; 
 
   if (isNaN(number)) {
-    return input.toString(); // Return the original string if it's not a valid number
+    return input.toString(); 
   }
 
   if (number < 1000) {
-    return number.toString(); // Return the number as a string if it's less than 1000
+    return number.toString(); 
   } else if (number >= 1000000) {
-    return `${(number / 1000000).toFixed(1).replace(/\.0$/, "")}M`; // Convert to millions
+    return `${(number / 1000000).toFixed(1).replace(/\.0$/, "")}M`;
   } else {
-    return `${(number / 1000).toFixed(1).replace(/\.0$/, "")}K`; // Convert to thousands
+    return `${(number / 1000).toFixed(1).replace(/\.0$/, "")}K`;
   }
 }
 
@@ -63,14 +62,11 @@ export function timeSinceUpload(dateString: string) {
   const uploadDate = new Date(dateString);
   const now = new Date();
 
-  // Calculate the difference in milliseconds
 
   const diffInMs = now.getTime() - uploadDate.getTime();
 
-  // Convert milliseconds to seconds
   const diffInSeconds = Math.floor(diffInMs / 1000);
 
-  // Calculate the difference in various time units
   const seconds = diffInSeconds % 60;
   const minutes = Math.floor(diffInSeconds / 60) % 60;
   const hours = Math.floor(diffInSeconds / 3600) % 24;
@@ -78,7 +74,6 @@ export function timeSinceUpload(dateString: string) {
   const months = Math.floor(days / 30);
   const years = Math.floor(days / 365);
 
-  // Determine the appropriate string to return
   if (years > 0) {
     return `${years} year${years > 1 ? "s" : ""} ago`;
   } else if (months > 0) {

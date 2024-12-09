@@ -14,7 +14,7 @@ import Channel from "./channel";
 import { useTheme } from "next-themes";
 
 
-import { sendGTMEvent } from '@next/third-parties/google'
+import { sendGAEvent } from '@next/third-parties/google'
 
 
 const Hero = () => {
@@ -40,7 +40,7 @@ const Hero = () => {
       setChannelId(parsedId);
     }
 
-    sendGTMEvent({ event: 'searched', value: parsedId })
+    sendGAEvent('event', 'searchTerms', { value: parsedId })
     setSearchTerms("");
   };
 
@@ -87,8 +87,8 @@ const Hero = () => {
                   <img
                         src={
                           theme === "light"
-                            ? "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Black.png"
-                            : "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_White.png"
+                            ? "/images/spotifyBlack.png"
+                            : "/images/spotifyWhite.png"
                         }
                         alt="icon"
                         className="w-4 h-4"
@@ -99,61 +99,7 @@ const Hero = () => {
                 </div>
               </div>
 
-              {/* <ul>
-                  <li>https://www.youtube.com/watch?v=4HaA9rIAsm0</li>
-                  <li>https://www.youtube.com/watch?v=WTJB8zQW1Uo</li>
-                  <li>https://www.youtube.com/watch?v=LCPXgoIt5nE</li>
-                  <li>https://www.youtube.com/watch?v=e0kQIcqrJ8o</li>
-                  <li>https://www.youtube.com/watch?v=nYcVZSznW2o</li>
-                  <li>https://www.youtube.com/watch?v=R6mzaePnkN0</li>
-                  <li>https://www.youtube.com/watch?v=9HYtGZ9QgNY</li>
-                  <li>https://www.youtube.com/watch?v=__D5M_8cEQQ</li>
-                  <li>https://www.youtube.com/watch?v=e7bmG5eaJaY</li>
-                  <li>https://www.youtube.com/watch?v=QprSqzajhT0</li>
-                  <li>https://www.youtube.com/watch?v=XMqrkaiNHSc</li>
-                  <li>https://www.youtube.com/watch?v=TTp9NVY0mgM</li>
-                  <li>https://www.youtube.com/watch?v=Pf7VYfjP5QE</li>
-                  <li>https://www.youtube.com/watch?v=UVQKTsbYDcY</li>
-                  <li>https://www.youtube.com/watch?v=rdzQhZ6qCWs</li>
-                  <li>https://www.youtube.com/watch?v=ZTJ5uqSk9GA</li>
-                  <li>https://www.youtube.com/watch?v=dAndaKjaA6Y</li>
-                  <li>https://www.youtube.com/watch?v=N023C6KgHcg</li>
-                  <li>https://www.youtube.com/watch?v=6xmSP3IaLb8</li>
-                  <li>https://www.youtube.com/watch?v=AAMvAwCUtRA</li>
-                  <li>https://www.youtube.com/watch?v=GkBQzvkMPvU</li>
-                  <li>https://www.youtube.com/watch?v=lIaSY7N6oDs</li>
-                  <li>https://www.youtube.com/watch?v=VU__tKZ3Ed4</li>
-                  <li>https://www.youtube.com/watch?v=DHv3FAKxKKM</li>
-                  <li>https://www.youtube.com/watch?v=R-FBzJ3fU4w</li>
-                  <li>https://www.youtube.com/watch?v=kktVqyYTM7Q</li>
-                  <li>https://www.youtube.com/watch?v=s0df_8wmNGg</li>
-                  <li>https://www.youtube.com/watch?v=mxATJPvTMfI</li>
-                  <li>https://www.youtube.com/watch?v=2hpb6nNXAXY</li>
-                  <li>https://www.youtube.com/watch?v=A4Wb-FQDfzY</li>
-                  <li>https://www.youtube.com/watch?v=MqgJ_LtCYrA</li>
-                  <li>https://www.youtube.com/watch?v=5Fdn5LcH7jc</li>
-                  <li>https://www.youtube.com/watch?v=L-e_LjZ6-6g</li>
-                  <li>https://www.youtube.com/watch?v=WkouqL3Rp-Y</li>
-                  <li>https://www.youtube.com/watch?v=5fbQestfUqg</li>
-                  <li>https://www.youtube.com/watch?v=QebMlaehWCU</li>
-                  <li>https://www.youtube.com/watch?v=4JVFs4WfbHk</li>
-                  <li>https://www.youtube.com/watch?v=n2eNiNuiXfQ</li>
-                  <li>https://www.youtube.com/watch?v=IfiuSs1SKMk</li>
-                  <li>https://www.youtube.com/watch?v=y5iuNgXT7dE</li>
-                  <li>https://www.youtube.com/watch?v=2VgtsdYccTw</li>
-                  <li>https://www.youtube.com/watch?v=P6ihDewy3JE</li>
-                  <li>https://www.youtube.com/watch?v=-qItbMzRuv8</li>
-                  <li>https://www.youtube.com/watch?v=UnNbM-edTVM</li>
-                  <li>https://www.youtube.com/watch?v=ST501zIKlJQ</li>
-                  <li>https://www.youtube.com/watch?v=kyKiZJ_FCnA</li>
-                  <li>https://www.youtube.com/watch?v=lFT-GlEn5Jo</li>
-                  <li>https://www.youtube.com/watch?v=bmXWoBlxLek</li>
-                  <li>https://www.youtube.com/watch?v=UHqqQG5FN4s</li>
-                  <li>https://www.youtube.com/watch?v=-rcB3_z0dN8</li>
-              </ul> */}
-
-              {/* ATTEMPTING LEG DAY (WE HIT ARMS?) */}
-              {/* MASS BUILDING ARM DAY */}
+              
 
             </div>
 
@@ -174,8 +120,10 @@ const Hero = () => {
           {errorVideo && <p>Error: {errorVideo.message}</p>}
           {errorChannel && <p>Error: {errorChannel.message}</p>}
 
+
           <div
-            className={`flex-grow ${
+            className={`flex-grow px-4 sm:px-6 lg:px-8 w-full mx-auto overflow-x-hidden${
+            // className={`flex-grow ${
               (isLoadingVideo || dataVideo) && currentContent === "video" ? "h-screen" : "h-auto"
             }`}
             ref={contentRef}
@@ -195,7 +143,7 @@ const Hero = () => {
           </div>
 
           <div
-            className={`flex-grow ${
+            className={`flex-grow max-w-full ${
               (isLoadingChannel || dataChannel) && currentContent === "channel" ? "h-screen" : "h-auto"
             }`}
             ref={contentRef}
@@ -205,10 +153,10 @@ const Hero = () => {
             ) : (
               dataChannel &&
               currentContent === "channel" && (
-                <>
+                <div className="flex flex-col max-w-full items-center px-10">
                   <Channel channel={dataChannel} />
                   <CommentSection channelId={dataChannel.items[0].id} />
-                </>
+                </div>
               )
             )}
           </div>
@@ -295,6 +243,64 @@ export default Hero;
 //       console.log(searchTerms)
 //       setSearchTerms(searchTerms);
 //     };
+
+
+
+// {/* <ul>
+//                   <li>https://www.youtube.com/watch?v=4HaA9rIAsm0</li>
+//                   <li>https://www.youtube.com/watch?v=WTJB8zQW1Uo</li>
+//                   <li>https://www.youtube.com/watch?v=LCPXgoIt5nE</li>
+//                   <li>https://www.youtube.com/watch?v=e0kQIcqrJ8o</li>
+//                   <li>https://www.youtube.com/watch?v=nYcVZSznW2o</li>
+//                   <li>https://www.youtube.com/watch?v=R6mzaePnkN0</li>
+//                   <li>https://www.youtube.com/watch?v=9HYtGZ9QgNY</li>
+//                   <li>https://www.youtube.com/watch?v=__D5M_8cEQQ</li>
+//                   <li>https://www.youtube.com/watch?v=e7bmG5eaJaY</li>
+//                   <li>https://www.youtube.com/watch?v=QprSqzajhT0</li>
+//                   <li>https://www.youtube.com/watch?v=XMqrkaiNHSc</li>
+//                   <li>https://www.youtube.com/watch?v=TTp9NVY0mgM</li>
+//                   <li>https://www.youtube.com/watch?v=Pf7VYfjP5QE</li>
+//                   <li>https://www.youtube.com/watch?v=UVQKTsbYDcY</li>
+//                   <li>https://www.youtube.com/watch?v=rdzQhZ6qCWs</li>
+//                   <li>https://www.youtube.com/watch?v=ZTJ5uqSk9GA</li>
+//                   <li>https://www.youtube.com/watch?v=dAndaKjaA6Y</li>
+//                   <li>https://www.youtube.com/watch?v=N023C6KgHcg</li>
+//                   <li>https://www.youtube.com/watch?v=6xmSP3IaLb8</li>
+//                   <li>https://www.youtube.com/watch?v=AAMvAwCUtRA</li>
+//                   <li>https://www.youtube.com/watch?v=GkBQzvkMPvU</li>
+//                   <li>https://www.youtube.com/watch?v=lIaSY7N6oDs</li>
+//                   <li>https://www.youtube.com/watch?v=VU__tKZ3Ed4</li>
+//                   <li>https://www.youtube.com/watch?v=DHv3FAKxKKM</li>
+//                   <li>https://www.youtube.com/watch?v=R-FBzJ3fU4w</li>
+//                   <li>https://www.youtube.com/watch?v=kktVqyYTM7Q</li>
+//                   <li>https://www.youtube.com/watch?v=s0df_8wmNGg</li>
+//                   <li>https://www.youtube.com/watch?v=mxATJPvTMfI</li>
+//                   <li>https://www.youtube.com/watch?v=2hpb6nNXAXY</li>
+//                   <li>https://www.youtube.com/watch?v=A4Wb-FQDfzY</li>
+//                   <li>https://www.youtube.com/watch?v=MqgJ_LtCYrA</li>
+//                   <li>https://www.youtube.com/watch?v=5Fdn5LcH7jc</li>
+//                   <li>https://www.youtube.com/watch?v=L-e_LjZ6-6g</li>
+//                   <li>https://www.youtube.com/watch?v=WkouqL3Rp-Y</li>
+//                   <li>https://www.youtube.com/watch?v=5fbQestfUqg</li>
+//                   <li>https://www.youtube.com/watch?v=QebMlaehWCU</li>
+//                   <li>https://www.youtube.com/watch?v=4JVFs4WfbHk</li>
+//                   <li>https://www.youtube.com/watch?v=n2eNiNuiXfQ</li>
+//                   <li>https://www.youtube.com/watch?v=IfiuSs1SKMk</li>
+//                   <li>https://www.youtube.com/watch?v=y5iuNgXT7dE</li>
+//                   <li>https://www.youtube.com/watch?v=2VgtsdYccTw</li>
+//                   <li>https://www.youtube.com/watch?v=P6ihDewy3JE</li>
+//                   <li>https://www.youtube.com/watch?v=-qItbMzRuv8</li>
+//                   <li>https://www.youtube.com/watch?v=UnNbM-edTVM</li>
+//                   <li>https://www.youtube.com/watch?v=ST501zIKlJQ</li>
+//                   <li>https://www.youtube.com/watch?v=kyKiZJ_FCnA</li>
+//                   <li>https://www.youtube.com/watch?v=lFT-GlEn5Jo</li>
+//                   <li>https://www.youtube.com/watch?v=bmXWoBlxLek</li>
+//                   <li>https://www.youtube.com/watch?v=UHqqQG5FN4s</li>
+//                   <li>https://www.youtube.com/watch?v=-rcB3_z0dN8</li>
+//               </ul> */}
+
+//               {/* ATTEMPTING LEG DAY (WE HIT ARMS?) */}
+//               {/* MASS BUILDING ARM DAY */}
 
 //   return (
 //     <section className="overflow-hidden py-32 z-10">

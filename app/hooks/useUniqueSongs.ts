@@ -3,9 +3,7 @@ import APIClient from "../services/api/api-client";
 import { useEffect, useState } from "react"
 
 
-const lambdaURL = "https://0tccyg2utb.execute-api.ca-central-1.amazonaws.com/get-unqiue-songs"; // Add your Lambda URL here
-// const apiClient = new APIClient<UniqueSongs>(lambdaURL);
-const apiClient = new APIClient(lambdaURL);
+const apiClient = new APIClient("/get-unique-songs");
 
 interface UniqueSongs {
   status: "cached" | "queued";
@@ -16,7 +14,6 @@ interface UniqueSongs {
 const useUniqueSongs = (channelId: string, search: boolean, videoId?: string) => {
   const [refetchFlag, setRefetchFlag] = useState(false); 
 
-  // Primary query to check if unique songs are already cached or if a job is queuing
   const { data, isLoading, error, refetch } = useQuery<UniqueSongs, Error>({
     queryKey: ["unique songs", channelId, videoId],
     queryFn: () =>
