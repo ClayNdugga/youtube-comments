@@ -12,7 +12,6 @@ This project provides a scalable and fault-tolerant backend architecture that en
 - [Components](#components)
   - [1. Job Queue, Tracking, and Processing](#1-job-queue-tracking-and-processing)
   - [2. Song Searching Algorithm](#2-song-searching-algorithm)
-- [Data Flow](#data-flow)
 - [Data Models](#data-models)
   - [DynamoDB Table Structure](#dynamodb-table-structure)
   - [S3 Folder Structure](#s3-folder-structure)
@@ -20,11 +19,7 @@ This project provides a scalable and fault-tolerant backend architecture that en
 - [Scalability and Fault Tolerance](#scalability-and-fault-tolerance)
 - [Error Handling and Idempotency](#error-handling-and-idempotency)
 - [Caching Strategy](#caching-strategy)
-- [Security Considerations](#security-considerations)
-- [Deployment](#deployment)
-- [API Endpoints](#api-endpoints)
-- [Future Improvements](#future-improvements)
-- [License](#license)
+
 
 ## Features
 
@@ -75,7 +70,7 @@ The backend architecture is in AWS. The following is a rough archtecture diagram
 
 5. **Job Completion**:
    - Updates the job status in DynamoDB to "complete" once processing is finished.
-   - Notifies the user through API responses or callbacks.
+   - The client "long polls" the backend uses the updated status to retrieve the results
 
 ## Components
 
