@@ -36,7 +36,7 @@ The backend architecture is in AWS. The following is a rough archtecture diagram
 
 <!-- ![alt text]("https://github.com/ClayNdugga/youtube-comments/tree/main/public/images/placeholderAvatar.png?raw=true") -->
 
-![alt text]("https://github.com/ClayNdugga/youtube-comments/blob/main/public/images/YTC%20architecture.png?raw=true")
+  <img src="https://github.com/ClayNdugga/youtube-comments/blob/main/public/images/YTC%20architecture.png?raw=true">
 
 
 - **Amazon API Gateway**: Acts as the entry point for all API requests, handling load balancing and routing to the appropriate services.
