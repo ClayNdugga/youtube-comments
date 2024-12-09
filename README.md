@@ -24,11 +24,10 @@ This project provides a scalable and fault-tolerant backend architecture that en
 ## Features
 
 - **Scalable Backend Architecture**: Designed to handle a high volume of requests with AWS serverless components.
-- **Fault Tolerance**: Utilizes AWS services to ensure reliable job processing and data retrieval.
-- **Song Extraction**: Implements algorithm to accurately extract song names from YouTube comments.
-- **Integration with Spotify API**: Enables users to search and retrieve song details directly from Spotify.
 - **Efficient Job Queue System**: Manages job states and processing using DynamoDB and SQS queues.
 - **Loose Coupling of Components**: Achieved through the use of queues and microservices architecture.
+- **Song Extraction**: Implements algorithm to accurately extract song names from YouTube comments.
+- **Integration with Spotify API**: Enables users to search and retrieve song details directly from Spotify.
 
 ## Architecture Overview
 
