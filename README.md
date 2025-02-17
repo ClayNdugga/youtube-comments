@@ -1,5 +1,7 @@
 # YouTube Comments & Song Search Backend
 
+![ytc demo grid](https://github.com/user-attachments/assets/743684bc-be05-4090-bfac-69ccc0e6b35a)
+
 ## Overview
 
 This project provides a scalable and fault-tolerant backend architecture that enables users to extract and search for songs mentioned in YouTube comments, either from a single video or an entire channel. The application is integrated with Spotify's song search for music discovery.
