@@ -2,7 +2,7 @@
 
 ![ytc demo grid](https://github.com/user-attachments/assets/743684bc-be05-4090-bfac-69ccc0e6b35a)
 
-Try the project here [ytcommentfind.com](ytcommentfind.com)
+Try the project here [ytcommentfind.com](https://www.ytcommentfind.com)
 
 ## Overview
 
